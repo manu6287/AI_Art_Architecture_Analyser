@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis Result</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Analysis Result</h1>
+        <img src="{{ image_url }}" alt="Analyzed Image" class="analyzed-image">
+        <div class="analysis-results">
+            <h2>Analysis Results</h2>
+            {% if analysis and analysis.error %}
+                <p class="error">{{ analysis.error }}</p>
+            {% elif analysis %}
+               <p><strong>Type:</strong> {{ analysis.type }}</p>
+                <p><strong>Title:</strong> {{ analysis.title }}</p>
+                <p><strong>Artist/Creator:</strong> {{ analysis.creator if analysis.creator else "unknown"}}</p>
+                 <p><strong>Style:</strong> {{ analysis.style if analysis.style else "unknown"}}</p>
+                <p><strong>Year:</strong> {{ analysis.year if analysis.year else "unknown" }}</p>
+                 <p><strong>Era:</strong> {{ analysis.era if analysis.era else "unknown" }}</p>
+                <p><strong>Cultural Origin:</strong> {{ analysis.culturalOrigin if analysis.culturalOrigin else "unknown" }}</p>
+                <p><strong>Provenance:</strong> {{ analysis.provenance if analysis.provenance else "unknown"}}</p>
+                <p><strong>Contextual Meaning:</strong> {{ analysis.contextualMeaning if analysis.contextualMeaning else "unknown" }}</p>
+            {% else %}
+                <p>No analysis available.</p>
+            {% endif %}
+        </div>
+        <a href="{{ url_for('index') }}" class="button">Analyze Another Image</a>
+    </div>
+</body>
+</html>
