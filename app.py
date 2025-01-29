@@ -36,11 +36,34 @@ class Analysis(TypedDict):
     provenance: str
     contextualMeaning: str
 
-class Feedback(TypedDict):
-    div1: str
-    div2: str
-    div3: str
-    div4: str
+class FeedbackArtStyle(TypedDict):
+    brushwork: str
+    palette: str
+    comp_struct: str
+    light_shadow: str
+    lines_shapes : str
+    scale_proportion: str
+
+class FeedbackEmotionEval(TypedDict):
+    color_palette : str
+    Brushwork_texture : str
+    Compositon_framing: str
+    Lighting_shadow: str
+    Lines_shapes : str    
+    scale_proportions: str
+    brushstroke_mov: str
+
+class FeedbackSthSpecific:
+    prop_anatomy: str
+    persp_depth: str
+    line_quality: str
+    lighting_shadows: str
+    texture_detail: str
+    comp_framing: str
+    color: str #if applicable
+    mood_emotion: str
+    flow_gesture: str
+    overall_concept: str    
 
 
 def provide_feedback(image_path, prompt:str):
@@ -54,7 +77,7 @@ def provide_feedback(image_path, prompt:str):
         result = genai.GenerativeModel("gemini-1.5-flash", system_instruction=instruction).generate_content(
             [{'mime_type': 'image/jpeg', 'data': base64_image}, prompt],
              generation_config=genai.GenerationConfig(
-                response_mime_type="application/json", response_schema=Feedback
+                response_mime_type="application/json", response_schema=FeedbackArtStyle
             ),
         )
 
