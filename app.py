@@ -11,7 +11,7 @@ from typing_extensions import TypedDict
 app = Flask(__name__)
 
 # Set up authentication
-api_key = "AIzaSyB8LlzCfMw9Yjn6mlJ_oKDxNBOd3QdedPk"
+api_key = "..."
 genai.configure(api_key=api_key)
 
 if not api_key:
@@ -74,7 +74,7 @@ class FeedbackIntent(enum.Enum):
 def provide_feedback(image_path:str, prompt: str):
     try:
 
-        api_key = "AIzaSyB8LlzCfMw9Yjn6mlJ_oKDxNBOd3QdedPk"
+        api_key = "..."
         genai.configure(api_key=api_key)
         instruction = "Determine which aspect of their art the user intends to work on based on the given prompt. Reply only with one of the following enums: 'Artstyle', 'Emotion', or 'Specific Object'."
 
