@@ -11,7 +11,7 @@ from typing_extensions import TypedDict
 app = Flask(__name__)
 
 # Set up authentication
-api_key = "..."
+api_key = "AIzaSyB8LlzCfMw9Yjn6mlJ_oKDxNBOd3QdedPk"
 genai.configure(api_key=api_key)
 
 if not api_key:
@@ -65,38 +65,80 @@ class FeedbackSthSpecific:
     flow_gesture: str
     overall_concept: str    
 
+class FeedbackIntent(enum.Enum):
+    ARTSTYLE = "Artstyle"
+    EMOTION = "Emotion"
+    SPECIFIC_OBJECT = "Specific Object" 
 
-def provide_feedback(image_path, prompt:str):
+
+def provide_feedback(image_path:str, prompt: str):
     try:
-        instruction = ''
-        with open(image_path, "rb") as image_file:
-            image_data = image_file.read()
 
-        base64_image = base64.b64encode(image_data).decode('utf-8')
+        api_key = "AIzaSyB8LlzCfMw9Yjn6mlJ_oKDxNBOd3QdedPk"
+        genai.configure(api_key=api_key)
+        instruction = "Determine which aspect of their art the user intends to work on based on the given prompt. Reply only with one of the following enums: 'Artstyle', 'Emotion', or 'Specific Object'."
 
+        # Generate Response
         result = genai.GenerativeModel("gemini-1.5-flash", system_instruction=instruction).generate_content(
-            [{'mime_type': 'image/jpeg', 'data': base64_image}, prompt],
-             generation_config=genai.GenerationConfig(
-                response_mime_type="application/json", response_schema=FeedbackArtStyle
-            ),
-        )
-
-
-    except Exception as e:
-        return {"error": str(e)}
-
-def provide_feedback(prompt:str):
-    try:
-        instruction = ''
-        result = genai.GenerativeModel("gemini-1.5-flash", system_instruction=instruction).generate_content(
-            prompt,
+            [prompt],
             generation_config=genai.GenerationConfig(
-                response_mime_type="application/json", response_schema=Analysis
+                response_mime_type="application/json"
             ),
         )
 
+        # Extract JSON response (assuming the response is inside `candidates[0]['content']['parts'][0]['text']`)
+        response_text = result.candidates[0].content.parts[0].text.strip()
+
+        # Map the response to the Enum (Ensure it matches exactly)
+        intent = FeedbackIntent(response_text)
+        schema = FeedbackEmotionEval
+        # Execute Different Code Based on the Intent
+        if intent == FeedbackIntent.ARTSTYLE:
+            instruction = 'Give feedback on how to improve the given artwork for the desired artstyle for each category in the schema. Reply with the specified json schema'
+            schema = FeedbackArtStyle
+
+            print("User wants to improve their art style. Suggesting relevant techniques...")
+            # Execute Code for Art Style Enhancement
+        elif intent == FeedbackIntent.EMOTION:
+            print("User wants to convey emotions better in their art. Suggesting emotional expression techniques...")
+            # Execute Code for Enhancing Emotion in Art
+        elif intent == FeedbackIntent.SPECIFIC_OBJECT:
+            print("User wants to focus on a specific object. Providing detailed object-based suggestions...")
+            # Execute Code for Improving Specific Object Representation
+        else:
+            print("Unknown intent detected.")
+
+        # instruction = ''
+        # with open(image_path, "rb") as image_file:
+        #     image_data = image_file.read()
+
+        # base64_image = base64.b64encode(image_data).decode('utf-8')
+
+        # result = genai.GenerativeModel("gemini-1.5-flash", system_instruction=instruction).generate_content(
+        #     [{'mime_type': 'image/jpeg', 'data': base64_image}, prompt],
+        #      generation_config=genai.GenerationConfig(
+        #         response_mime_type="application/json", response_schema=schema
+        #     ),
+        # )
+
+        # print(result)
+
+
     except Exception as e:
         return {"error": str(e)}
+
+# def provide_feedback(prompt:str):
+#     try:
+#         instruction = ''
+#         result = genai.GenerativeModel("gemini-1.5-flash", system_instruction=instruction).generate_content(
+#             prompt,
+#             generation_config=genai.GenerationConfig(
+#                 response_mime_type="application/json", response_schema=Analysis
+#             ),
+#         )
+
+#     except Exception as e:
+#         return {"error": str(e)}
 
 # Function to Analyze the Image
 def analyze_image(image_path):
