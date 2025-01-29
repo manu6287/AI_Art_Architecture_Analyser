@@ -36,6 +36,44 @@ class Analysis(TypedDict):
     provenance: str
     contextualMeaning: str
 
+class Feedback(TypedDict):
+    div1: str
+    div2: str
+    div3: str
+    div4: str
+
+
+def provide_feedback(image_path, prompt:str):
+    try:
+        instruction = ''
+        with open(image_path, "rb") as image_file:
+            image_data = image_file.read()
+
+        base64_image = base64.b64encode(image_data).decode('utf-8')
+
+        result = genai.GenerativeModel("gemini-1.5-flash", system_instruction=instruction).generate_content(
+            [{'mime_type': 'image/jpeg', 'data': base64_image}, prompt],
+             generation_config=genai.GenerationConfig(
+                response_mime_type="application/json", response_schema=Feedback
+            ),
+        )
+
+
+    except Exception as e:
+        return {"error": str(e)}
+
+def provide_feedback(prompt:str):
+    try:
+        instruction = ''
+        result = genai.GenerativeModel("gemini-1.5-flash", system_instruction=instruction).generate_content(
+            prompt,
+            generation_config=genai.GenerationConfig(
+                response_mime_type="application/json", response_schema=Analysis
+            ),
+        )
+
+    except Exception as e:
+        return {"error": str(e)}
 
 # Function to Analyze the Image
 def analyze_image(image_path):

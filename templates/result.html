@@ -25,7 +25,7 @@
                 <p><strong>Provenance:</strong> {{ analysis.provenance if analysis.provenance else "unknown"}}</p>
                 <p><strong>Contextual Meaning:</strong> {{ analysis.contextualMeaning if analysis.contextualMeaning else "unknown" }}</p>
             {% else %}
-                <p>No analysis available.</p>
+                <p>Analysis is not available right now. Please try again later.</p>
             {% endif %}
         </div>
         <a href="{{ url_for('index') }}" class="button">Analyze Another Image</a>
