@@ -7,6 +7,12 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('index') }}">Home</a></li>
+            <li><a href="{{ url_for('ChatBot') }}">ChatBot</a></li>
+        </ul>
+    </nav>
     <div class="container">
         <h1>Analysis Result</h1>
         <img src="{{ image_url }}" alt="Analyzed Image" class="analyzed-image">
@@ -25,7 +31,7 @@
                 <p><strong>Provenance:</strong> {{ analysis.provenance if analysis.provenance else "unknown"}}</p>
                 <p><strong>Contextual Meaning:</strong> {{ analysis.contextualMeaning if analysis.contextualMeaning else "unknown" }}</p>
             {% else %}
-                <p>Analysis is not available right now. Please try again later.</p>
+                <p>No analysis available.</p>
             {% endif %}
         </div>
         <a href="{{ url_for('index') }}" class="button">Analyze Another Image</a>
