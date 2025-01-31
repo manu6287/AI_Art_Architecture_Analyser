@@ -84,30 +84,7 @@ def analyze_image(image_path):
     except Exception as e:
         return {"error": str(e)}
 
-
-@app.route('/', methods=['GET', 'POST'], endpoint='home')
-def index():
-    if request.method == 'POST':
-        if 'file' not in request.files:
-            return render_template('index.html', error='No file part')
-
-        file = request.files['file']
-
-        if file.filename == '':
-            return render_template('index.html', error='No selected file')
-
-        if file:
-            filename = str(uuid.uuid4()) + os.path.splitext(file.filename)[1]
-            filepath = os.path.join('static', 'uploads', filename)
-            file.save(filepath)
-
-            analysis = analyze_image(filepath)
-
-            return render_template('result.html', image_url=url_for('static', filename=f'uploads/{filename}'),
-                                   analysis=analysis)
-
-    return render_template('index.html')
-
+# Function to Generate Chatbot Response
 def generate_chatbot_response(image_path, user_prompt):
     try:
         # Load the image using Pillow
