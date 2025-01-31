@@ -6,12 +6,15 @@ import base64
 import json
 import enum
 from typing_extensions import TypedDict
+from dotenv import load_dotenv
 
 
 app = Flask(__name__)
 
+
 # Set up authentication
-api_key = "..."
+load_dotenv()
+api_key = os.getenv('GOOGLE_API_KEY')
 genai.configure(api_key=api_key)
 
 if not api_key:
@@ -71,12 +74,10 @@ class FeedbackIntent(enum.Enum):
     SPECIFIC_OBJECT = "Specific Object" 
 
 
-def provide_feedback(image_path:str, prompt: str):
+def provide_feedback (image_path:str, prompt: str, intent:enum):
     try:
 
-        api_key = "..."
-        genai.configure(api_key=api_key)
-        instruction = "Determine which aspect of their art the user intends to work on based on the given prompt. Reply only with one of the following enums: 'Artstyle', 'Emotion', or 'Specific Object'."
+        instruction = "Determine which aspect of their art the user intends to work on based on the given prompt. Reply only with one of the following enums for FeedbackIntent: 'Artstyle', 'Emotion', or 'Specific Object'."
 
         # Generate Response
         result = genai.GenerativeModel("gemini-1.5-flash", system_instruction=instruction).generate_content(
@@ -86,42 +87,53 @@ def provide_feedback(image_path:str, prompt: str):
             ),
         )
 
+
         # Extract JSON response (assuming the response is inside `candidates[0]['content']['parts'][0]['text']`)
         response_text = result.candidates[0].content.parts[0].text.strip()
+        response_dict = json.loads(response_text)
+
+        # Extract the FeedbackIntent value
+        intent_value = response_dict.get("FeedbackIntent")
+
+        # Convert to Enum
+        intent = FeedbackIntent(intent_value)
 
         # Map the response to the Enum (Ensure it matches exactly)
-        intent = FeedbackIntent(response_text)
-        schema = FeedbackEmotionEval
+        schema = ''
         # Execute Different Code Based on the Intent
         if intent == FeedbackIntent.ARTSTYLE:
-            instruction = 'Give feedback on how to improve the given artwork for the desired artstyle for each category in the schema. Reply with the specified json schema'
+            instruction = 'Give feedback on how to improve the given artwork for the desired artstyle for each category in the schema. Reply with the specified json schema.'
             schema = FeedbackArtStyle
 
             print("User wants to improve their art style. Suggesting relevant techniques...")
             # Execute Code for Art Style Enhancement
         elif intent == FeedbackIntent.EMOTION:
+            instruction = 'Give feedback on how to convey or better convey the desired emotion in the given artwork for each category in the schema. Reply with the specified json schema.'
+            schema = FeedbackEmotionEval
             print("User wants to convey emotions better in their art. Suggesting emotional expression techniques...")
             # Execute Code for Enhancing Emotion in Art
         elif intent == FeedbackIntent.SPECIFIC_OBJECT:
+            instruction = 'Give feedback on how to add or better include the specific desired object(s) into the given artwork for each category in the schema. Reply with the specified json schema.'
+            schema = FeedbackSthSpecific
             print("User wants to focus on a specific object. Providing detailed object-based suggestions...")
             # Execute Code for Improving Specific Object Representation
         else:
             print("Unknown intent detected.")
 
-        # instruction = ''
-        # with open(image_path, "rb") as image_file:
-        #     image_data = image_file.read()
+        
+        with open(image_path, "rb") as image_file:
+            image_data = image_file.read()
 
-        # base64_image = base64.b64encode(image_data).decode('utf-8')
+        base64_image = base64.b64encode(image_data).decode('utf-8')
 
-        # result = genai.GenerativeModel("gemini-1.5-flash", system_instruction=instruction).generate_content(
-        #     [{'mime_type': 'image/jpeg', 'data': base64_image}, prompt],
-        #      generation_config=genai.GenerationConfig(
-        #         response_mime_type="application/json", response_schema=schema
-        #     ),
-        # )
+        result = genai.GenerativeModel("gemini-1.5-flash", system_instruction=instruction).generate_content(
+            [{'mime_type': 'image/jpeg', 'data': base64_image}, prompt],
+             generation_config=genai.GenerationConfig(
+                response_mime_type="application/json", response_schema=schema
+            ),
+        )
 
-        # print(result)
+        print(result)
 
 
     except Exception as e:
