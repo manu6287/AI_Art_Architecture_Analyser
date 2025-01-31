@@ -29,7 +29,7 @@ class Type(enum.Enum):
     SCULPTURE = "Sculpture"
     ARTWORK = "Artwork"
 
-
+# Define Enums and Analysis Schema
 class Analysis(TypedDict):
     type: Type
     title: str
