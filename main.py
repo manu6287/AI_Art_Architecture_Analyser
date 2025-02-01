@@ -14,7 +14,7 @@ app = Flask(__name__)
 app.secret_key = os.urandom(24) # Needed for sessions to work
 
 # Set up authentication
-api_key = "AIzaSyCNfoz9ynNBUPlomIRwAhf5B8g5NcWAwmg"
+api_key = "GOOGLE_API_KEY"
 #os.getenv('GOOGLE_API_KEY')
 genai.configure(api_key=api_key)
 
@@ -148,9 +148,13 @@ def generate_chatbot_response(image_path, user_prompt):
            You are a chatbot designed to give feedback on drawings and paintings.
            Your goal is to provide constructive and helpful suggestions that will help improve user artwork.
 
-           Your tone should be positive and encouraging. 
+           Your tone should be positive and encouraging.
+           Your answer should be short and concise.
+           You have to ask the user nonetheless whether they want a more detailed answer or not. 
            If no image is provided in the prompt then just respond to the prompt alone.
            If an image is provided respond to the prompt based on the image.
+           Try to guess what character or person is drawn or painted.
+           
            
 
            User Prompt: {user_prompt}
