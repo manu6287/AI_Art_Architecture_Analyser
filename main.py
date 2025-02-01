@@ -7,13 +7,12 @@ import base64
 import json
 import enum
 from typing_extensions import TypedDict
-
+from methods import feedback_intent_resolution, analyze_image
+from structures import Type, Analysis, FeedbackArtStyle, FeedbackEmotionEval, FeedbackIntent, FeedbackSthSpecific
 
 load_dotenv()
-
 app = Flask(__name__)
 app.secret_key = os.urandom(24) # Needed for sessions to work
-
 
 # Set up authentication
 api_key = os.getenv('GOOGLE_API_KEY')
@@ -21,68 +20,42 @@ genai.configure(api_key=api_key)
 
 if not api_key:
     raise ValueError("Please make sure to define your GOOGLE_API_KEY in your .env file")
-
-
-# Define Enums and Analysis Schema
-class Type(enum.Enum):
-    BUILDING = "Building"
-    SCULPTURE = "Sculpture"
-    ARTWORK = "Artwork"
-
-# Define Enums and Analysis Schema
-class Analysis(TypedDict):
-    type: Type
-    title: str
-    creator: str
-    style: str
-    year: int
-    era: str
-    culturalOrigin: str
-    provenance: str
-    contextualMeaning: str
-
-
-# Function to Analyze the Image
-def analyze_image(image_path):
+    
+def response(prompt, instruction, schema):
+    try:
+        result = genai.GenerativeModel("gemini-1.5-flash", system_instruction=instruction).generate_content(
+            [prompt],
+            generation_config=genai.GenerationConfig(
+                response_mime_type="application/json",
+                response_schema=schema
+            ),
+        )
+        
+        return result
+    except Exception as e:
+        return {"error": str(e)}
+    
+def response_with_image(prompt, instruction, schema, image_path):
+    
     try:
         # Load the image using Pillow
         with open(image_path, "rb") as image_file:
             image_data = image_file.read()
 
         base64_image = base64.b64encode(image_data).decode('utf-8')
-
-        instruction = (
-            "You are an app that analyses art in artwork, buildings, and sculptures. "
-            "You will identify the type of art, the title of the work, which style was used to create it, "
-            "who the creator is, the year it was created, the name of the era when it was created, "
-            "the provenance, the cultural geographic origin, the meaning and/or the context of the work, "
-            "If you don't know the answer to some field use value 'unknown', "
-            "and then output in the specified JSON format."
-        )
-
-        prompt = "What can you tell me about this work of art?"
-
+        
         result = genai.GenerativeModel("gemini-1.5-flash", system_instruction=instruction).generate_content(
             [{'mime_type': 'image/jpeg', 'data': base64_image}, prompt],
-             generation_config=genai.GenerationConfig(
-                response_mime_type="application/json", response_schema=Analysis
+            generation_config=genai.GenerationConfig(
+                response_mime_type="application/json",
+                response_schema=schema
             ),
         )
-
-        # Extract the content from the result
-        if result and hasattr(result, 'candidates') and result.candidates:
-            # Get the JSON string from the model's response
-            json_text = result.candidates[0].content.parts[0].text
-
-            # Parse the JSON string into a Python dictionary
-            analysis_data = json.loads(json_text)
-
-            return analysis_data
-        else:
-             return {"error": "No valid candidates in the response."}
-
+        
+        return result
     except Exception as e:
         return {"error": str(e)}
+            
 
 # Function to Generate Chatbot Response
 def generate_chatbot_response(image_path, user_prompt):
