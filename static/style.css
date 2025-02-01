@@ -4,7 +4,8 @@ body {
     line-height: 1.6;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
+    /*background-color: #f4f4f4;*/
+    background: linear-gradient(to right, rgb(133, 143, 255), rgb(178, 178, 255), rgb(255, 255, 255));
 }
 
 nav {
@@ -35,14 +36,15 @@ nav ul li a {
     margin: auto;
     overflow: hidden;
     padding: 20px;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    /*background-color: #fff;*/
+    box-shadow: 0 0 0px rgba(0, 0, 0, 0.1);
     border-radius: 5px;
     margin-top: 20px;
+    background-color: rgba(0, 0, 0, 0.4) !important;
 }
 
 h1 {
-    color: #333;
+    color: #ffffff;
     text-align: center;
 }
 
@@ -54,6 +56,7 @@ form {
 
 input[type="file"] {
     margin: 10px 0;
+    color: #ffffff;
 }
 
 button, .button {
@@ -90,14 +93,15 @@ button:hover, .button:hover {
 }
 
 .analysis-results {
-    background-color: #f9f9f9;
+    background-color: rgba(0, 0, 0, 0.4) !important;
     padding: 20px;
     border-radius: 5px;
     margin-top: 20px;
+    color: #ffffff;
 }
 
 .analysis-results h2 {
-    color: #333;
+    color: #ffffff;
     border-bottom: 1px solid #ddd;
     padding-bottom: 10px;
 }
@@ -105,8 +109,10 @@ button:hover, .button:hover {
 .analysis-results ul {
     list-style-type: none;
     padding: 0;
+    color: #ffffff;
 }
 
 .analysis-results li {
     margin-bottom: 5px;
+    color: #ffffff;
 }
