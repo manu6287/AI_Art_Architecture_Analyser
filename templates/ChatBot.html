@@ -50,9 +50,9 @@
                     <div class="d-flex bd-highlight">
                         <div class="img_cont">
                             <img
-                                    src="https://i.ibb.co/fSNP7Rz/icons8-chatgpt-512.png"
-                                    {#                                    src=/Logo512.png#}
+                                    src="https://i.ibb.co/7J7Xh7ZF/Logo512.png"
                                     class="rounded-circle user_img"
+                                     onerror="this.onerror=null; this.src='https://i.ibb.co/N1Z2b9v/cute-robot.png'"
                             />
                             <span class="online_icon"></span>
                         </div>
@@ -74,6 +74,7 @@
                                     <img
                                             src="https://i.ibb.co/d5b84Xw/Untitled-design.png"
                                             class="rounded-circle user_img_msg"
+                                            onerror="this.onerror=null; this.src='https://i.ibb.co/N1Z2b9v/cute-robot.png'"
                                     />
                                 </div>
                             </div>
@@ -81,8 +82,9 @@
                             <div class="d-flex justify-content-start mb-4">
                                 <div class="img_cont_msg">
                                     <img
-                                            src="https://i.ibb.co/fSNP7Rz/icons8-chatgpt-512.png"
+                                            src="https://i.ibb.co/7J7Xh7ZF/Logo512.png"
                                             class="rounded-circle user_img_msg"
+                                             onerror="this.onerror=null; this.src='https://i.ibb.co/N1Z2b9v/cute-robot.png'"
                                     />
                                 </div>
                                 <div class="msg_cotainer">
@@ -187,7 +189,7 @@
                 rawText +
                 '<span class="msg_time_send">' +
                 str_time +
-                '</span></div><div class="img_cont_msg"><img src="https://i.ibb.co/d5b84Xw/Untitled-design.png" class="rounded-circle user_img_msg"></div></div>';
+                '</span></div><div class="img_cont_msg"><img src="https://i.ibb.co/d5b84Xw/Untitled-design.png" class="rounded-circle user_img_msg" onerror="this.onerror=null; this.src=\'https://i.ibb.co/N1Z2b9v/cute-robot.png\'"></div></div>';
 
             $("#text").val("");
             $("#imagePreview").attr("src", "").hide();
@@ -201,7 +203,7 @@
                 url: "/get",
             }).done(function (data) {
                 var botHtml =
-                    '<div class="d-flex justify-content-start mb-4"><div class="img_cont_msg"><img src="https://i.ibb.co/fSNP7Rz/icons8-chatgpt-512.png" class="rounded-circle user_img_msg"></div><div class="msg_cotainer">' +
+                    '<div class="d-flex justify-content-start mb-4"><div class="img_cont_msg"><img src="https://i.ibb.co/7J7Xh7ZF/Logo512.png" class="rounded-circle user_img_msg" onerror="this.onerror=null; this.src=\'https://i.ibb.co/N1Z2b9v/cute-robot.png\'"></div><div class="msg_cotainer">' +
                     data +
                     '<span class="msg_time">' +
                     str_time +

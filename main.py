@@ -14,7 +14,8 @@ app = Flask(__name__)
 app.secret_key = os.urandom(24) # Needed for sessions to work
 
 # Set up authentication
-api_key = os.getenv('GOOGLE_API_KEY')
+api_key = "AIzaSyCNfoz9ynNBUPlomIRwAhf5B8g5NcWAwmg"
+#os.getenv('GOOGLE_API_KEY')
 genai.configure(api_key=api_key)
 
 if not api_key:
@@ -150,6 +151,7 @@ def generate_chatbot_response(image_path, user_prompt):
            Your tone should be positive and encouraging. 
            If no image is provided in the prompt then just respond to the prompt alone.
            If an image is provided respond to the prompt based on the image.
+           
 
            User Prompt: {user_prompt}
 
