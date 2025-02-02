@@ -17,8 +17,7 @@ app = Flask(__name__)
 app.secret_key = os.urandom(24) # Needed for sessions to work
 
 # Set up authentication
-api_key = "GOOGLE_API_KEY"
-#os.getenv('GOOGLE_API_KEY')
+api_key = os.getenv('GOOGLE_API_KEY')
 genai.configure(api_key=api_key)
 
 if not api_key:
@@ -178,7 +177,7 @@ def chatbot_response_process(prompt, image_path):
         if chat_history.__len__() < 1:
             instruction, schema = feedback_intent_resolution(prompt)
 
-        if instruction is None or schema is None and image_path is None:
+        if instruction is None or schema is None:
             instruction = 'You are a chatbot that provides detailed feedback only on the requested specific factor of the user\'s art. The tone should be soft and educational, providing concrete suggestions for improvement. Use 200 words or less.'
             schema=Reply
 
@@ -258,14 +257,14 @@ def chat():
     if 'file' not in request.files:
         user_prompt = request.form.get('msg')
         
-        chat_response = jsonify(chatbot_response_process(prompt=user_prompt))
+        chat_response = jsonify(chatbot_response_process(prompt=user_prompt, image_path=None))
         return chat_response
 
     file = request.files['file']
     user_prompt = request.form.get('msg')
 
     if file.filename == '':
-        chat_response = jsonify(chatbot_response_process(prompt=user_prompt))
+        chat_response = jsonify(chatbot_response_process(prompt=user_prompt, image_path=None))
         return chat_response
 
     if file:
