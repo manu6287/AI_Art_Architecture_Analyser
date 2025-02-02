@@ -17,7 +17,8 @@ app = Flask(__name__)
 app.secret_key = os.urandom(24) # Needed for sessions to work
 
 # Set up authentication
-api_key = os.getenv('GOOGLE_API_KEY')
+api_key = "GOOGLE_API_KEY"
+#os.getenv('GOOGLE_API_KEY')
 genai.configure(api_key=api_key)
 
 if not api_key:
