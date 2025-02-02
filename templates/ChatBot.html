@@ -200,9 +200,25 @@
                 type: "POST",
                 url: "/get",
             }).done(function (data) {
-                var botHtml =
-                    '<div class="d-flex justify-content-start mb-4"><div class="img_cont_msg"><img src="https://i.ibb.co/fSNP7Rz/icons8-chatgpt-512.png" class="rounded-circle user_img_msg"></div><div class="msg_cotainer">' +
-                    data +
+                let botHtml = '<div class="d-flex justify-content-start mb-4"><div class="img_cont_msg"><img src="https://i.ibb.co/fSNP7Rz/icons8-chatgpt-512.png" class="rounded-circle user_img_msg"></div><div class="msg_cotainer">';
+                // Check if the response is a JSON object
+                 try {
+                    console.log("Response from server:", data); // Log the complete response
+                    const responseJson = JSON.parse(JSON.stringify(data)); // Ensure it's a JSON object, and not something else.
+                    if (typeof responseJson === "object") {
+                         for (const key in responseJson){
+                            botHtml += `<b>${key.replace(/_/g, ' ').toUpperCase()}:</b> <br> ${responseJson[key]} <br>`;
+                         }
+                    } else {
+                        botHtml += data;
+                         console.error("Response is not an object:", responseJson);
+                    }
+                  } catch (e){
+                    // If not valid json, then the response is a simple message.
+                    botHtml += data;
+                     console.error("Error parsing JSON in JS:", e);
+                }
+                 botHtml +=
                     '<span class="msg_time">' +
                     str_time +
                     "</span></div></div>";
