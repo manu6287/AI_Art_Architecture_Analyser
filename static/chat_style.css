@@ -281,6 +281,15 @@ body, html {
     align-items: center;
 }
 
+.json-response {
+    background-color: #f4f4f4;
+    padding: 10px;
+    border-radius: 5px;
+    font-family: monospace;
+    white-space: pre-wrap;
+}
+
+
 p {
     color: white;
     font-size: 20px;
